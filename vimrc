@@ -23,11 +23,15 @@ colorscheme solarized
 
 set encoding=utf-8
 set fileencoding=utf-8
-set fileencodings=ucs-bom,utf-8,gbk,cp936,latin-1 
+set fileencodings=utf-8,chinese,gbk,gbk2312,cp936,latin-1 
 set fileformat=unix
 set fileformats=unix,dos,mac
 
 
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+language messages zh_CN.utf-8
 
 filetype on                                           "启用文件类型侦测
 filetype plugin on                                    "针对不同的文件类型加载对应的插件
