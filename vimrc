@@ -1,18 +1,71 @@
 call plug#begin('~/vimfiles/plugged')
 
+" UI Plugins
+Plug 'altercation/vim-colors-solarized'
+Plug 'liuchengxu/space-vim-dark'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" IDE Plugins
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'preservim/nerdtree'
+
+Plug 'skywind3000/asynctasks.vim'
+Plug 'skywind3000/asyncrun.vim'
 
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
 
-Plug 'altercation/vim-colors-solarized'
-Plug 'liuchengxu/space-vim-dark'
+if has('nvim')
+  Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/denite.nvim'
+  Plug 'Shougo/defx.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+endif
 
 " Initialize plugin system
 call plug#end()
 
+" Map
+nnoremap <silent><F5> :AsyncTask run<CR>
+nnoremap <silent><F6> :AsyncTask project-run<CR>
+nnoremap <silent><F7> :AsyncTask project-build<CR>
+nnoremap <silent><F9> :AsyncTask build<CR>
+
+
+nnoremap <M-F12> :below ter ++close<CR>
+
+" Define nerdtree
+map <C-n> :NERDTreeToggle<CR>
+
+" Define mappings
+autocmd FileType denite call s:denite_my_settings()
+function! s:denite_my_settings() abort
+  nnoremap <silent><buffer><expr> <CR>
+  \ denite#do_map('do_action')
+  nnoremap <silent><buffer><expr> d
+  \ denite#do_map('do_action', 'delete')
+  nnoremap <silent><buffer><expr> p
+  \ denite#do_map('do_action', 'preview')
+  nnoremap <silent><buffer><expr> q
+  \ denite#do_map('quit')
+  nnoremap <silent><buffer><expr> i
+  \ denite#do_map('open_filter_buffer')
+  nnoremap <silent><buffer><expr> <Space>
+  \ denite#do_map('toggle_select').'j'
+endfunction
+
 source $VIM/_vimrc
 
+let g:python3_host_prog = "~/AppData/Local/Programs/Python/Python38-32/python.exe"
+
 syntax enable
+
+set pythonthreedll=python38.dll
 
 set nobackup
 set noswapfile
@@ -33,16 +86,24 @@ source $VIMRUNTIME/menu.vim
 
 language messages zh_CN.utf-8
 
-filetype on                                           "ÆôÓÃÎÄ¼şÀàĞÍÕì²â
-filetype plugin on                                    "Õë¶Ô²»Í¬µÄÎÄ¼şÀàĞÍ¼ÓÔØ¶ÔÓ¦µÄ²å¼ş
-filetype plugin indent on                             "ÆôÓÃËõ½ø
-set smartindent                                       "ÆôÓÃÖÇÄÜ¶ÔÆë·½Ê½
-set expandtab                                         "½«Tab¼ü×ª»»Îª¿Õ¸ñ
-set tabstop=4                                         "ÉèÖÃTab¼üµÄ¿í¶È
-set shiftwidth=4                                      "»»ĞĞÊ±×Ô¶¯Ëõ½ø4¸ö¿Õ¸ñ
-set smarttab                                          "Ö¸¶¨°´Ò»´Îbackspace¾ÍÉ¾³ıshiftwidth¿í¶ÈµÄ¿Õ¸ñ
+filetype on                                           "å¯ç”¨æ–‡ä»¶ç±»å‹ä¾¦æµ‹
+filetype plugin on                                    "é’ˆå¯¹ä¸åŒçš„æ–‡ä»¶ç±»å‹åŠ è½½å¯¹åº”çš„æ’ä»¶
+filetype plugin indent on                             "å¯ç”¨ç¼©è¿›
+set smartindent                                       "å¯ç”¨æ™ºèƒ½å¯¹é½æ–¹å¼
+set expandtab                                         "å°†Tabé”®è½¬æ¢ä¸ºç©ºæ ¼
+set tabstop=4                                         "è®¾ç½®Tabé”®çš„å®½åº¦
+set shiftwidth=4                                      "æ¢è¡Œæ—¶è‡ªåŠ¨ç¼©è¿›4ä¸ªç©ºæ ¼
+set softtabstop=4
+set smarttab                                          "æŒ‡å®šæŒ‰ä¸€æ¬¡backspaceå°±åˆ é™¤shiftwidthå®½åº¦çš„ç©ºæ ¼
 
 set autoread
 
-
 set number
+
+" async taks
+let g:asyuncrun_open=6
+let g:asyncrun_rootmarks = ['.git', '.svn', '.root', '.project', '.hg', 'Cargo.toml']
+
+
+"'è®©vimrcé…ç½®å˜æ›´ç«‹å³ç”Ÿæ•ˆ'
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
